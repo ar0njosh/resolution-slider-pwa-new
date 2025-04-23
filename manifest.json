@@ -1,0 +1,50 @@
+{
+    "name": "Resolution Slider App",
+    "short_name": "Resolution Slider",
+    "description": "A PWA to adjust image resolutions with aspect ratio and orientation controls.",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "scope": "/",
+    "background_color": "#333333",
+    "theme_color": "#333333",
+    "orientation": "any",
+    "icons": [
+      {
+        "src": "/assets/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/assets/icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/assets/icon-144.png",
+        "sizes": "144x144",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "/assets/icon-96.png",
+        "sizes": "96x96",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "/assets/icon-72.png",
+        "sizes": "72x72",
+        "type": "image/png",
+        "purpose": "any"
+      }
+    ],
+    "splash_screens": [
+      {
+        "src": "/assets/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }

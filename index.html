@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#333333">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Resolution Slider">
+  <title>Resolution Slider App</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/assets/icon-512.png">
+  <link rel="icon" href="/assets/icon-512.png">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    select {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #333333;
+      font-size: 16px;
+      background: #fff;
+      color: #333;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml;utf8,<svg fill='%23333333' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 24px;
+      outline: none;
+    }
+    select:focus {
+      border-color: #4d4d4d;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    select:hover {
+      border-color: #4d4d4d;
+    }
+    select::-moz-focus-inner {
+      border: 0;
+    }
+    select:-moz-focusring {
+      color: transparent;
+      text-shadow: 0 0 0 #333;
+    }
+    select:focus-visible {
+      outline: none;
+    }
+    input[type="radio"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #333333;
+      border-radius: 50%;
+      margin: 0 4px;
+      vertical-align: middle;
+    }
+    input[type="radio"]:checked {
+      background: #333333;
+    }
+    input[type="radio"]:hover {
+      border-color: #4d4d4d;
+    }
+    input[type="radio"]:checked:hover {
+      background: #4d4d4d;
+    }
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+    .slider-container {
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    input[type="range"] {
+      flex-grow: 1;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #ccc;
+      height: 8px;
+      border-radius: 4px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #333333;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      background: #4d4d4d;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #333333;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-thumb:hover {
+      background: #4d4d4d;
+    }
+    .button-group {
+      display: flex;
+      gap: 5px;
+    }
+    .adjust-button {
+      background-color: #333333;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .adjust-button:hover {
+      background-color: #4d4d4d;
+    }
+    .resolution-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .resolution-button {
+      background-color: #333333;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .resolution-button:hover {
+      background-color: #4d4d4d;
+    }
+    .output {
+      margin: 20px 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .visual-container {
+      margin-top: 20px;
+    }
+    .visual-rect {
+      border: 2px solid #333333;
+      background-color: #f0f0f0;
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+    .visual-section {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 15px;
+      background: #e9ecef;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .visual-section h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      justify-items: center;
+    }
+    .visual-item {
+      text-align: center;
+    }
+    .visual-item span {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .visual-button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+    .visual-button:hover {
+      transform: scale(1.05);
+    }
+    .visual-button:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #4d4d4d;
+    }
+    .visual-button .visual-rect,
+    .visual-button span {
+      pointer-events: none;
+    }
+    @media (max-width: 600px) {
+      .container, .visual-section {
+        padding: 15px;
+      }
+      select {
+        font-size: 14px;
+      }
+      input[type="radio"] {
+        width: 14px;
+        height: 14px;
+      }
+      .output {
+        font-size: 16px;
+      }
+      .adjust-button {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+      }
+      .visual-grid {
+        grid-template-columns: 1fr;
+      }
+      .visual-rect {
+        transform: scale(0.8);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Resolution Slider</h2>
+    <div class="controls">
+      <select id="aspectRatio">
+        <option value="1:1">1:1</option>
+        <option value="9:16">9:16</option>
+        <option value="4:5" selected>4:5</option>
+        <option value="3:4">3:4</option>
+        <option value="2:3">2:3</option>
+        <option value="5:7">5:7</option>
+      </select>
+      <div class="radio-group">
+        <label><input type="radio" name="orientation" value="portrait" checked> Portrait</label>
+        <label><input type="radio" name="orientation" value="landscape"> Landscape</label>
+      </div>
+    </div>
+    <div class="slider-container">
+      <input type="range" id="resolutionSlider" min="360" max="7680" value="1080">
+      <div class="button-group">
+        <button class="adjust-button" onclick="adjustResolution(-1)">↓</button>
+        <button class="adjust-button" onclick="adjustResolution(1)">↑</button>
+      </div>
+    </div>
+    <div class="resolution-buttons">
+      <button class="resolution-button" onclick="setResolution(1920)">1080p</button>
+      <button class="resolution-button" onclick="setResolution(2560)">2K</button>
+      <button class="resolution-button" onclick="setResolution(3840)">4K</button>
+      <button class="resolution-button" onclick="setResolution(7680)">8K</button>
+    </div>
+    <div class="output" id="resolutionOutput">1536 × 1920</div>
+    <div class="visual-container">
+      <span id="visualLabel">4:5 Portrait</span>
+      <div class="visual-rect" id="visualRect" style="width: 64px; height: 80px;" title="Aspect Ratio: 4:5 = 0.8"></div>
+    </div>
+  </div>
+
+  <div class="visual-section">
+    <h2>Aspect Ratio Comparison</h2>
+    <div class="visual-grid">
+      <button class="visual-button" data-aspect="1:1" data-orientation="portrait">
+        <div class="visual-item">
+          <span>1:1 Portrait</span>
+          <div class="visual-rect" style="width: 80px; height: 80px;" title="Aspect Ratio: 1:1 = 1.0"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="1:1" data-orientation="landscape">
+        <div class="visual-item">
+          <span>1:1 Landscape</span>
+          <div class="visual-rect" style="width: 80px; height: 80px;" title="Aspect Ratio: 1:1 = 1.0"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="9:16" data-orientation="portrait">
+        <div class="visual-item">
+          <span>9:16 Portrait</span>
+          <div class="visual-rect" style="width: 45px; height: 80px;" title="Aspect Ratio: 9:16 = 0.5625"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="9:16" data-orientation="landscape">
+        <div class="visual-item">
+          <span>16:9 Landscape</span>
+          <div class="visual-rect" style="width: 80px; height: 45px;" title="Aspect Ratio: 16:9 = 1.7778"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="4:5" data-orientation="portrait">
+        <div class="visual-item">
+          <span>4:5 Portrait</span>
+          <div class="visual-rect" style="width: 64px; height: 80px;" title="Aspect Ratio: 4:5 = 0.8"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="4:5" data-orientation="landscape">
+        <div class="visual-item">
+          <span>5:4 Landscape</span>
+          <div class="visual-rect" style="width: 80px; height: 64px;" title="Aspect Ratio: 5:4 = 1.25"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="3:4" data-orientation="portrait">
+        <div class="visual-item">
+          <span>3:4 Portrait</span>
+          <div class="visual-rect" style="width: 60px; height: 80px;" title="Aspect Ratio: 3:4 = 0.75"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="3:4" data-orientation="landscape">
+        <div class="visual-item">
+          <span>4:3 Landscape</span>
+          <div class="visual-rect" style="width: 80px; height: 60px;" title="Aspect Ratio: 4:3 = 1.3333"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="2:3" data-orientation="portrait">
+        <div class="visual-item">
+          <span>2:3 Portrait</span>
+          <div class="visual-rect" style="width: 53.33px; height: 80px;" title="Aspect Ratio: 2:3 = 0.6667"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="2:3" data-orientation="landscape">
+        <div class="visual-item">
+          <span>3:2 Landscape</span>
+          <div class="visual-rect" style="width: 80px; height: 53.33px;" title="Aspect Ratio: 3:2 = 1.5"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="5:7" data-orientation="portrait">
+        <div class="visual-item">
+          <span>5:7 Portrait</span>
+          <div class="visual-rect" style="width: 57.14px; height: 80px;" title="Aspect Ratio: 5:7 ≈ 0.7143"></div>
+        </div>
+      </button>
+      <button class="visual-button" data-aspect="5:7" data-orientation="landscape">
+        <div class="visual-item">
+          <span>7:5 Landscape</span>
+          <div class="visual-rect" style="width: 80px; height: 57.14px;" title="Aspect Ratio: 7:5 = 1.4"></div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const aspectRatioSelect = document.getElementById('aspectRatio');
+    const orientationRadios = document.querySelectorAll('input[name="orientation"]');
+    const resolutionSlider = document.getElementById('resolutionSlider');
+    const resolutionOutput = document.getElementById('resolutionOutput');
+    const visualRect = document.getElementById('visualRect');
+    const visualLabel = document.getElementById('visualLabel');
+
+    const aspectRatios = {
+      '1:1': 1.0,
+      '9:16': 9/16,
+      '4:5': 4/5,
+      '3:4': 3/4,
+      '2:3': 2/3,
+      '5:7': 5/7
+    };
+
+    function updateUI() {
+      const aspectRatioStr = aspectRatioSelect.value;
+      const orientation = document.querySelector('input[name="orientation"]:checked').value;
+      const longDimension = parseInt(resolutionSlider.value);
+
+      let ratio = aspectRatios[aspectRatioStr];
+      if (orientation === 'landscape') {
+        ratio = 1 / ratio;
+      }
+
+      let width, height;
+      if (orientation === 'portrait') {
+        height = longDimension;
+        width = Math.round(longDimension * ratio);
+      } else {
+        width = longDimension;
+        height = Math.round(longDimension / ratio);
+      }
+
+      resolutionOutput.textContent = `${width} × ${height}`;
+
+      const maxVisualSize = 80;
+      let visualWidth, visualHeight;
+      if (orientation === 'portrait') {
+        visualHeight = maxVisualSize;
+        visualWidth = maxVisualSize * ratio;
+      } else {
+        visualWidth = maxVisualSize;
+        visualHeight = maxVisualSize / ratio;
+      }
+      visualRect.style.width = `${visualWidth}px`;
+      visualRect.style.height = `${visualHeight}px`;
+      visualRect.title = `Aspect Ratio: ${aspectRatioStr}${orientation === 'landscape' ? ' (' + (1/ratio).toFixed(4) + ')' : ' (' + ratio.toFixed(4) + ')'}`;
+      visualLabel.textContent = `${aspectRatioStr} ${orientation.charAt(0).toUpperCase() + orientation.slice(1)}`;
+
+      if (aspectRatioStr === '4:5' && orientation === 'portrait' && Math.abs(longDimension - 1920) < 50) {
+        resolutionOutput.title = 'Common for Instagram portraits';
+      } else if (aspectRatioStr === '9:16' && orientation === 'portrait' && Math.abs(longDimension - 1920) < 50) {
+        resolutionOutput.title = 'Ideal for mobile video';
+      } else {
+        resolutionOutput.title = '';
+      }
+    }
+
+    function adjustResolution(delta) {
+      const currentValue = parseInt(resolutionSlider.value);
+      const newValue = Math.max(360, Math.min(7680, currentValue + delta));
+      resolutionSlider.value = newValue;
+      updateUI();
+    }
+
+    function setResolution(value) {
+      resolutionSlider.value = value;
+      updateUI();
+    }
+
+    aspectRatioSelect.addEventListener('change', updateUI);
+    orientationRadios.forEach(radio => radio.addEventListener('change', updateUI));
+    resolutionSlider.addEventListener('input', updateUI);
+
+    // Ensure DOM is loaded before adding visual button listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.visual-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const aspectRatio = button.dataset.aspect;
+          const orientation = button.dataset.orientation;
+          aspectRatioSelect.value = aspectRatio;
+          document.querySelector(`input[name="orientation"][value="${orientation}"]`).checked = true;
+          updateUI();
+        });
+      });
+    });
+
+    updateUI();
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('Service Worker registered'))
+          .catch(err => console.log('Service Worker registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
